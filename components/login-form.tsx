@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -11,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [isAdminLogin, setIsAdminLogin] = useState(false)
+  const [userType, setUserType] = useState("")
   const [showForm, setShowForm] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
@@ -20,33 +22,37 @@ export function LoginForm() {
     e.preventDefault()
     setError("")
 
-    // Basic validation
     if (!email || !password) {
       setError("Please enter both email and password.")
       return
     }
 
-    // Here you would typically make an API call to verify credentials
-    // For this example, we'll use simple checks
-    if (email === "student@example.com" && password === "password") {
-      if (isAdminLogin) {
-        setError("Invalid admin credentials")
-      } else {
+    // Updated authentication logic
+    if (email === "student@example.com" && password === "studentpass") {
+      if (userType === "student") {
         router.push("/student-dashboard")
+      } else {
+        setError("Invalid credentials for selected user type")
       }
     } else if (email === "admin@example.com" && password === "adminpass") {
-      if (isAdminLogin) {
+      if (userType === "admin") {
         router.push("/admin-dashboard")
       } else {
-        setError("Please use admin login for this account")
+        setError("Invalid credentials for selected user type")
+      }
+    } else if (email === "hod@example.com" && password === "hodpass123") {
+      if (userType === "hod") {
+        router.push("/hod-dashboard")
+      } else {
+        setError("Invalid credentials for selected user type")
       }
     } else {
       setError("Invalid credentials")
     }
   }
 
-  const handleLoginClick = (isAdmin: boolean) => {
-    setIsAdminLogin(isAdmin)
+  const handleLoginClick = (type: string) => {
+    setUserType(type)
     setShowForm(true)
     setError("")
     setEmail("")
@@ -57,16 +63,19 @@ export function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
-          <CardTitle>{isAdminLogin ? "Admin Login" : "Student Login"}</CardTitle>
+          <CardTitle>{userType ? `${userType.charAt(0).toUpperCase() + userType.slice(1)} Login` : "Login"}</CardTitle>
         </CardHeader>
         <CardContent>
           {!showForm ? (
             <div className="space-y-4">
-              <Button onClick={() => handleLoginClick(false)} className="w-full">
+              <Button onClick={() => handleLoginClick("student")} className="w-full">
                 Login as Student
               </Button>
-              <Button onClick={() => handleLoginClick(true)} className="w-full">
+              <Button onClick={() => handleLoginClick("admin")} className="w-full">
                 Login as Admin
+              </Button>
+              <Button onClick={() => handleLoginClick("hod")} className="w-full">
+                Login as HOD
               </Button>
             </div>
           ) : (
@@ -102,7 +111,7 @@ export function LoginForm() {
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <Button type="submit" className="w-full">
-                Login as {isAdminLogin ? "Admin" : "Student"}
+                Login
               </Button>
             </form>
           )}

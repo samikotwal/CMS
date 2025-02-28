@@ -1,7 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   LineChart,
   Line,
@@ -38,6 +40,8 @@ import { ProfilePage } from "./profile-page"
 import { ContentPage } from "./content-page"
 import { MediaPage } from "./media-page"
 import { SettingsPage } from "./settings-page"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 const performanceData = [
   { month: "Jan", score: 85 },
@@ -84,6 +88,23 @@ export function Dashboard() {
     { title: "Attendance Rate", value: "95%", icon: Users, color: "bg-yellow-500" },
     { title: "Upcoming Events", value: 3, icon: Calendar, color: "bg-purple-500" },
   ]
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen)
+  }
+
+  const [showReportForm, setShowReportForm] = useState(false)
+  const [reportDescription, setReportDescription] = useState("")
+
+  const handleSubmitReport = (e: React.FormEvent) => {
+    e.preventDefault()
+    // In a real application, you would send this report to an API
+    console.log("Report submitted:", reportDescription)
+    setReportDescription("")
+    setShowReportForm(false)
+    // Show a success message to the user
+    alert("Your report has been submitted successfully.")
+  }
 
   const renderPage = () => {
     switch (activePage) {
@@ -191,6 +212,34 @@ export function Dashboard() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Submit a Report</span>
+                  <Button onClick={() => setShowReportForm(!showReportForm)}>
+                    {showReportForm ? "Cancel" : "New Report"}
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              {showReportForm && (
+                <CardContent>
+                  <form onSubmit={handleSubmitReport} className="space-y-4">
+                    <div>
+                      <Label htmlFor="reportDescription">Report Description</Label>
+                      <Textarea
+                        id="reportDescription"
+                        placeholder="Enter your report here..."
+                        value={reportDescription}
+                        onChange={(e) => setReportDescription(e.target.value)}
+                        rows={4}
+                      />
+                    </div>
+                    <Button type="submit">Submit Report</Button>
+                  </form>
+                </CardContent>
+              )}
+            </Card>
           </div>
         )
       default:
@@ -200,43 +249,49 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <motion.aside
-        initial={{ width: isSidebarOpen ? 250 : 0 }}
-        animate={{ width: isSidebarOpen ? 250 : 0 }}
-        className="bg-white shadow-md overflow-hidden"
-      >
-        <div className="p-4 space-y-4">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800">CMS Dashboard</h2>
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
-              <Menu />
-            </Button>
-          </div>
-          {sidebarItems.map((item, index) => (
-            <motion.button
-              key={item.key}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: index * 0.1 }}
-              className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors ${
-                activePage === item.key ? "bg-gray-200 text-gray-800" : "text-gray-600 hover:bg-gray-100"
-              }`}
-              onClick={() => setActivePage(item.key)}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-            </motion.button>
-          ))}
-        </div>
-      </motion.aside>
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.aside
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 250, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white shadow-md overflow-hidden"
+          >
+            <div className="p-4 space-y-4">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-800">CMS Dashboard</h2>
+                <Button variant="ghost" size="icon" className="lg:hidden" onClick={toggleSidebar}>
+                  <Menu />
+                </Button>
+              </div>
+              {sidebarItems.map((item, index) => (
+                <motion.button
+                  key={item.key}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors ${
+                    activePage === item.key ? "bg-gray-200 text-gray-800" : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                  onClick={() => setActivePage(item.key)}
+                >
+                  <item.icon size={20} />
+                  <span>{item.label}</span>
+                </motion.button>
+              ))}
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
 
       <main className="flex-1 overflow-x-hidden overflow-y-auto">
         <header className="bg-white shadow-sm">
           <div className="flex items-center justify-between p-4">
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!isSidebarOpen)}>
-              <Menu />
-            </Button>
-            <div className="flex-1 max-w-xl mx-4">
+            <div className="flex items-center">
+              <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2">
+                <Menu />
+              </Button>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <Input type="text" placeholder="Search..." className="pl-10 pr-4" />
@@ -256,7 +311,9 @@ export function Dashboard() {
           </div>
         </header>
 
-        <div className="p-6">{renderPage()}</div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="p-6">
+          {renderPage()}
+        </motion.div>
       </main>
     </div>
   )
