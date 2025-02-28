@@ -1,12 +1,25 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+} from "recharts"
 import {
   Home,
   FileText,
   ImageIcon,
-  Users,
   User,
   Settings,
   Menu,
@@ -15,14 +28,43 @@ import {
   LogOut,
   BookOpen,
   TrendingUp,
+  Users,
+  Calendar,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProfilePage } from "./profile-page"
 import { ContentPage } from "./content-page"
 import { MediaPage } from "./media-page"
 import { SettingsPage } from "./settings-page"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+const performanceData = [
+  { month: "Jan", score: 85 },
+  { month: "Feb", score: 78 },
+  { month: "Mar", score: 92 },
+  { month: "Apr", score: 88 },
+  { month: "May", score: 95 },
+  { month: "Jun", score: 90 },
+]
+
+const courseDistribution = [
+  { name: "Mathematics", value: 30 },
+  { name: "Science", value: 25 },
+  { name: "Literature", value: 20 },
+  { name: "History", value: 15 },
+  { name: "Art", value: 10 },
+]
+
+const assignmentCompletion = [
+  { assignment: "Assignment 1", completed: 95 },
+  { assignment: "Assignment 2", completed: 88 },
+  { assignment: "Assignment 3", completed: 92 },
+  { assignment: "Assignment 4", completed: 78 },
+  { assignment: "Assignment 5", completed: 85 },
+]
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"]
 
 export function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
@@ -37,10 +79,10 @@ export function Dashboard() {
   ]
 
   const stats = [
-    { title: "Total Students", value: 1234, icon: Users, color: "bg-blue-500" },
-    { title: "Courses", value: 56, icon: BookOpen, color: "bg-green-500" },
-    { title: "Assignments", value: 89, icon: FileText, color: "bg-yellow-500" },
-    { title: "Average Grade", value: "3.7", icon: TrendingUp, color: "bg-purple-500" },
+    { title: "Total Courses", value: 12, icon: BookOpen, color: "bg-blue-500" },
+    { title: "Average Grade", value: "A-", icon: TrendingUp, color: "bg-green-500" },
+    { title: "Attendance Rate", value: "95%", icon: Users, color: "bg-yellow-500" },
+    { title: "Upcoming Events", value: 3, icon: Calendar, color: "bg-purple-500" },
   ]
 
   const renderPage = () => {
@@ -57,7 +99,7 @@ export function Dashboard() {
         return (
           <div>
             <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {stats.map((stat, index) => (
                 <motion.div
                   key={stat.title}
@@ -79,6 +121,76 @@ export function Dashboard() {
                 </motion.div>
               ))}
             </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Performance Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={performanceData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="score" stroke="#8884d8" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={courseDistribution}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {courseDistribution.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {courseDistribution.map((course, index) => (
+                      <div key={course.name} className="flex items-center">
+                        <div
+                          className="w-3 h-3 rounded-full mr-2"
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        ></div>
+                        <span className="text-sm">{course.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Assignment Completion Rates</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={assignmentCompletion}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="assignment" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="completed" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </div>
         )
       default:
@@ -88,58 +200,46 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.aside
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 250, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            className="bg-[#1f2937] text-white fixed h-full z-50"
-          >
-            <div className="p-4 space-y-4">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold">CMS Dashboard</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-gray-700"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <Menu />
-                </Button>
-              </div>
-              {sidebarItems.map((item, index) => (
-                <motion.button
-                  key={item.key}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors ${
-                    activePage === item.key ? "bg-gray-700" : "hover:bg-gray-700"
-                  }`}
-                  onClick={() => setActivePage(item.key)}
-                >
-                  <item.icon size={20} />
-                  <span>{item.label}</span>
-                </motion.button>
-              ))}
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
+      <motion.aside
+        initial={{ width: isSidebarOpen ? 250 : 0 }}
+        animate={{ width: isSidebarOpen ? 250 : 0 }}
+        className="bg-white shadow-md overflow-hidden"
+      >
+        <div className="p-4 space-y-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-800">CMS Dashboard</h2>
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
+              <Menu />
+            </Button>
+          </div>
+          {sidebarItems.map((item, index) => (
+            <motion.button
+              key={item.key}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: index * 0.1 }}
+              className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors ${
+                activePage === item.key ? "bg-gray-200 text-gray-800" : "text-gray-600 hover:bg-gray-100"
+              }`}
+              onClick={() => setActivePage(item.key)}
+            >
+              <item.icon size={20} />
+              <span>{item.label}</span>
+            </motion.button>
+          ))}
+        </div>
+      </motion.aside>
 
-      <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "ml-[250px]" : "ml-0"}`}>
+      <main className="flex-1 overflow-x-hidden overflow-y-auto">
         <header className="bg-white shadow-sm">
           <div className="flex items-center justify-between p-4">
-            {!isSidebarOpen && (
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
-                <Menu />
-              </Button>
-            )}
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!isSidebarOpen)}>
+              <Menu />
+            </Button>
             <div className="flex-1 max-w-xl mx-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <Input type="text" placeholder="Search..." className="w-full pl-10 pr-4" />
+                <Input type="text" placeholder="Search..." className="pl-10 pr-4" />
               </div>
             </div>
             <div className="flex items-center space-x-4">
