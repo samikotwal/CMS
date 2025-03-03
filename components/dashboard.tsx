@@ -32,14 +32,21 @@ import {
   TrendingUp,
   Users,
   Calendar,
+  Clock,
+  Activity,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProfilePage } from "./profile-page"
 import { ContentPage } from "./content-page"
 import { MediaPage } from "./media-page"
 import { SettingsPage } from "./settings-page"
+import { AttendancePage } from "./attendance-page"
+import { ExamTimetablePage } from "./exam-timetable-page"
+import { RegularTimetablePage } from "./regular-timetable-page"
+import { ActivitiesPage } from "./activities-page"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -76,6 +83,10 @@ export function Dashboard() {
 
   const sidebarItems = [
     { icon: Home, label: "Dashboard", key: "dashboard" },
+    { icon: Users, label: "Attendance", key: "attendance" },
+    { icon: Clock, label: "Exam Timetable", key: "exam-timetable" },
+    { icon: Calendar, label: "Regular Timetable", key: "regular-timetable" },
+    { icon: Activity, label: "Activities", key: "activities" },
     { icon: FileText, label: "Content", key: "content" },
     { icon: ImageIcon, label: "Media", key: "media" },
     { icon: User, label: "Profile", key: "profile" },
@@ -116,10 +127,18 @@ export function Dashboard() {
         return <MediaPage />
       case "settings":
         return <SettingsPage />
+      case "attendance":
+        return <AttendancePage />
+      case "exam-timetable":
+        return <ExamTimetablePage />
+      case "regular-timetable":
+        return <RegularTimetablePage />
+      case "activities":
+        return <ActivitiesPage />
       case "dashboard":
         return (
           <div>
-            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-6">Student Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {stats.map((stat, index) => (
                 <motion.div
@@ -212,6 +231,56 @@ export function Dashboard() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+
+            <Tabs defaultValue="overview" className="mt-6">
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="attendance">Attendance</TabsTrigger>
+                <TabsTrigger value="timetables">Timetables</TabsTrigger>
+                <TabsTrigger value="activities">Activities</TabsTrigger>
+              </TabsList>
+              <TabsContent value="overview"></TabsContent>
+              <TabsContent value="attendance">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Attendance Summary</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <AttendancePage />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="timetables">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Exam Timetable</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ExamTimetablePage />
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Regular Timetable</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <RegularTimetablePage />
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+              <TabsContent value="activities">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Recent Activities</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ActivitiesPage />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
 
             <Card className="mt-8">
               <CardHeader>
