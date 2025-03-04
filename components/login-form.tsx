@@ -28,19 +28,19 @@ export function LoginForm() {
     }
 
     // Updated authentication logic
-    if (email === "student@example.com" && password === "studentpass") {
+    if (email === "student@example.com" && password === "111") {
       if (userType === "student") {
         router.push("/student-dashboard")
       } else {
         setError("Invalid credentials for selected user type")
       }
-    } else if (email === "admin@example.com" && password === "adminpass") {
+    } else if (email === "admin@example.com" && password === "222") {
       if (userType === "admin") {
         router.push("/admin-dashboard")
       } else {
         setError("Invalid credentials for selected user type")
       }
-    } else if (email === "hod@example.com" && password === "hodpass123") {
+    } else if (email === "hod@example.com" && password === "333") {
       if (userType === "hod") {
         router.push("/hod-dashboard")
       } else {

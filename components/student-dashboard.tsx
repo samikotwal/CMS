@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { Users, BookOpen, Building, GraduationCap, Bell, Search, LogOut, TrendingUp } from "lucide-react"
+import { Book, Clock, Calendar, Activity, Bell, Search, LogOut, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,14 +11,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sidebar } from "@/components/sidebar"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
-const data = [
-  { name: "Jan", students: 400, courses: 240 },
-  { name: "Feb", students: 300, courses: 139 },
-  { name: "Mar", students: 200, courses: 980 },
-  { name: "Apr", students: 278, courses: 390 },
-  { name: "May", students: 189, courses: 480 },
-  { name: "Jun", students: 239, courses: 380 },
-  { name: "Jul", students: 349, courses: 430 },
+const performanceData = [
+  { month: "Jan", score: 85 },
+  { month: "Feb", score: 78 },
+  { month: "Mar", score: 92 },
+  { month: "Apr", score: 88 },
+  { month: "May", score: 95 },
+  { month: "Jun", score: 90 },
 ]
 
 const AnimatedValue = ({ value }) => {
@@ -46,14 +45,14 @@ const AnimatedValue = ({ value }) => {
   return <span>{count}</span>
 }
 
-export function AdminDashboard() {
+export function StudentDashboard() {
   const router = useRouter()
 
   const stats = [
-    { title: "Total Students", value: 1234, icon: Users, color: "bg-blue-500" },
-    { title: "Total Courses", value: 56, icon: BookOpen, color: "bg-green-500" },
-    { title: "Total Branches", value: 8, icon: Building, color: "bg-yellow-500" },
-    { title: "Total Faculty", value: 120, icon: GraduationCap, color: "bg-purple-500" },
+    { title: "Courses Enrolled", value: 6, icon: Book, color: "bg-blue-500" },
+    { title: "Upcoming Exams", value: 3, icon: Clock, color: "bg-green-500" },
+    { title: "Attendance Rate", value: 95, icon: Calendar, color: "bg-yellow-500" },
+    { title: "Extracurricular Activities", value: 4, icon: Activity, color: "bg-purple-500" },
   ]
 
   const handleSignOut = () => {
@@ -62,11 +61,11 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar isAdmin />
+      <Sidebar />
       <div className="flex-1 ml-64">
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">Student Dashboard</h1>
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -77,7 +76,7 @@ export function AdminDashboard() {
               </Button>
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarFallback>ST</AvatarFallback>
               </Avatar>
               <Button variant="ghost" size="icon" onClick={handleSignOut}>
                 <LogOut />
@@ -105,6 +104,7 @@ export function AdminDashboard() {
                   <CardContent>
                     <div className="text-2xl font-bold">
                       <AnimatedValue value={stat.value} />
+                      {stat.title === "Attendance Rate" && "%"}
                     </div>
                   </CardContent>
                 </Card>
@@ -116,19 +116,18 @@ export function AdminDashboard() {
             <CardHeader>
               <CardTitle className="text-xl font-semibold flex items-center">
                 <TrendingUp className="mr-2 h-5 w-5" />
-                Student and Course Trends
+                Performance Over Time
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={data}>
+                  <LineChart data={performanceData}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
+                    <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
-                    <Line type="monotone" dataKey="students" stroke="#8884d8" strokeWidth={2} />
-                    <Line type="monotone" dataKey="courses" stroke="#82ca9d" strokeWidth={2} />
+                    <Line type="monotone" dataKey="score" stroke="#8884d8" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -138,15 +137,15 @@ export function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">Recent Activities</CardTitle>
+                <CardTitle className="text-lg font-semibold">Upcoming Assignments</CardTitle>
               </CardHeader>
-              <CardContent>{/* Add a list of recent activities here */}</CardContent>
+              <CardContent>{/* Add a list of upcoming assignments here */}</CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">Upcoming Events</CardTitle>
+                <CardTitle className="text-lg font-semibold">Recent Announcements</CardTitle>
               </CardHeader>
-              <CardContent>{/* Add a list of upcoming events here */}</CardContent>
+              <CardContent>{/* Add a list of recent announcements here */}</CardContent>
             </Card>
           </div>
         </main>
