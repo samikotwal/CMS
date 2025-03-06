@@ -16,9 +16,14 @@ export default function ContentPage() {
   const [contentType, setContentType] = useState("")
   const [contentDescription, setContentDescription] = useState("")
   const [content, setContent] = useState([
-    { id: 1, title: "Introduction to Calculus", type: "Course Material", description: "Basic concepts of calculus" },
-    { id: 2, title: "Lab Safety Guidelines", type: "Guidelines", description: "Safety rules for science labs" },
-    { id: 3, title: "Student Handbook", type: "Policy", description: "College policies and procedures" },
+    { id: 1, title: "Department Handbook", type: "Guidelines", description: "Department policies and procedures" },
+    { id: 2, title: "Research Methodology", type: "Course Material", description: "Introduction to research methods" },
+    {
+      id: 3,
+      title: "Faculty Directory",
+      type: "Information",
+      description: "List of faculty members and their contact information",
+    },
   ])
 
   const handleAddContent = () => {
@@ -35,12 +40,12 @@ export default function ContentPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar isAdmin />
+      <Sidebar />
       <div className="flex-1 ml-64 p-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">Manage Content</CardTitle>
+              <CardTitle className="text-2xl font-bold">Manage Department Content</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -54,9 +59,9 @@ export default function ContentPage() {
                     <SelectValue placeholder="Content Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Course Material">Course Material</SelectItem>
                     <SelectItem value="Guidelines">Guidelines</SelectItem>
-                    <SelectItem value="Policy">Policy</SelectItem>
+                    <SelectItem value="Course Material">Course Material</SelectItem>
+                    <SelectItem value="Information">Information</SelectItem>
                   </SelectContent>
                 </Select>
                 <Textarea

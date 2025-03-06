@@ -5,31 +5,27 @@ import { motion } from "framer-motion"
 import { Sidebar } from "@/components/sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Edit, Trash, Eye } from "lucide-react"
 
-export default function ContentPage() {
-  const [contentTitle, setContentTitle] = useState("")
-  const [contentType, setContentType] = useState("")
-  const [contentDescription, setContentDescription] = useState("")
-  const [content, setContent] = useState([
-    { id: 1, title: "Introduction to Calculus", type: "Course Material", description: "Basic concepts of calculus" },
-    { id: 2, title: "Lab Safety Guidelines", type: "Guidelines", description: "Safety rules for science labs" },
-    { id: 3, title: "Student Handbook", type: "Policy", description: "College policies and procedures" },
+export default function MediaPage() {
+  const [mediaTitle, setMediaTitle] = useState("")
+  const [mediaType, setMediaType] = useState("")
+  const [mediaFile, setMediaFile] = useState(null)
+  const [media, setMedia] = useState([
+    { id: 1, title: "Campus Tour Video", type: "Video", filename: "campus_tour.mp4" },
+    { id: 2, title: "College Brochure", type: "Document", filename: "brochure.pdf" },
+    { id: 3, title: "Lab Equipment Guide", type: "Image", filename: "lab_equipment.jpg" },
   ])
 
-  const handleAddContent = () => {
-    if (contentTitle && contentType) {
-      setContent([
-        ...content,
-        { id: content.length + 1, title: contentTitle, type: contentType, description: contentDescription },
-      ])
-      setContentTitle("")
-      setContentType("")
-      setContentDescription("")
+  const handleAddMedia = () => {
+    if (mediaTitle && mediaType && mediaFile) {
+      setMedia([...media, { id: media.length + 1, title: mediaTitle, type: mediaType, filename: mediaFile.name }])
+      setMediaTitle("")
+      setMediaType("")
+      setMediaFile(null)
     }
   }
 
@@ -40,33 +36,24 @@ export default function ContentPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">Manage Content</CardTitle>
+              <CardTitle className="text-2xl font-bold">Media Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <Input
-                  value={contentTitle}
-                  onChange={(e) => setContentTitle(e.target.value)}
-                  placeholder="Content Title"
-                />
-                <Select value={contentType} onValueChange={setContentType}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <Input value={mediaTitle} onChange={(e) => setMediaTitle(e.target.value)} placeholder="Media Title" />
+                <Select value={mediaType} onValueChange={setMediaType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Content Type" />
+                    <SelectValue placeholder="Media Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Course Material">Course Material</SelectItem>
-                    <SelectItem value="Guidelines">Guidelines</SelectItem>
-                    <SelectItem value="Policy">Policy</SelectItem>
+                    <SelectItem value="Video">Video</SelectItem>
+                    <SelectItem value="Document">Document</SelectItem>
+                    <SelectItem value="Image">Image</SelectItem>
                   </SelectContent>
                 </Select>
-                <Textarea
-                  className="col-span-2"
-                  value={contentDescription}
-                  onChange={(e) => setContentDescription(e.target.value)}
-                  placeholder="Content Description"
-                />
-                <Button className="col-span-2" onClick={handleAddContent}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Content
+                <Input type="file" onChange={(e) => setMediaFile(e.target.files[0])} />
+                <Button className="col-span-3" onClick={handleAddMedia}>
+                  <Plus className="mr-2 h-4 w-4" /> Add Media
                 </Button>
               </div>
               <Table>
@@ -74,16 +61,16 @@ export default function ContentPage() {
                   <TableRow>
                     <TableHead>Title</TableHead>
                     <TableHead>Type</TableHead>
-                    <TableHead>Description</TableHead>
+                    <TableHead>Filename</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {content.map((item) => (
+                  {media.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>{item.title}</TableCell>
                       <TableCell>{item.type}</TableCell>
-                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{item.filename}</TableCell>
                       <TableCell>
                         <Button variant="outline" size="sm" className="mr-2">
                           <Eye className="h-4 w-4" />

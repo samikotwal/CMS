@@ -3,7 +3,19 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { Users, BookOpen, Building, GraduationCap, Bell, Search, LogOut, TrendingUp } from "lucide-react"
+import {
+  Users,
+  BookOpen,
+  Building,
+  GraduationCap,
+  Bell,
+  Search,
+  LogOut,
+  TrendingUp,
+  Calendar,
+  FileText,
+  Activity,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -135,19 +147,79 @@ export function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Recent Activities</CardTitle>
-              </CardHeader>
-              <CardContent>{/* Add a list of recent activities here */}</CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Upcoming Events</CardTitle>
-              </CardHeader>
-              <CardContent>{/* Add a list of upcoming events here */}</CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Exam Timetable
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full" onClick={() => router.push("/admin/exam-timetable")}>
+                    Manage Exam Timetable
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <Calendar className="mr-2 h-5 w-5" />
+                    Regular Timetable
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full" onClick={() => router.push("/admin/regular-timetable")}>
+                    Manage Regular Timetable
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <Activity className="mr-2 h-5 w-5" />
+                    Activities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full" onClick={() => router.push("/admin/activities")}>
+                    Manage Activities
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold flex items-center">
+                    <FileText className="mr-2 h-5 w-5" />
+                    Content
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full" onClick={() => router.push("/admin/content")}>
+                    Manage Content
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </main>
       </div>
