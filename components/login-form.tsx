@@ -10,12 +10,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, User, Lock } from "lucide-react"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
 
@@ -133,6 +135,14 @@ export function LoginForm() {
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                           </button>
                         </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`${userType}-remember-me`}
+                          checked={rememberMe}
+                          onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                        />
+                        <Label htmlFor={`${userType}-remember-me`}>Remember me</Label>
                       </div>
                       {error && <p className="text-red-500 text-sm">{error}</p>}
                       <Button type="submit" className="w-full">

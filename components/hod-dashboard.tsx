@@ -15,6 +15,7 @@ import {
   Calendar,
   Upload,
   Edit,
+  CheckSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -62,8 +63,8 @@ export function HODDashboard() {
   const stats = [
     { title: "Total Teachers", value: 25, icon: Users, color: "bg-blue-500" },
     { title: "Total Courses", value: 15, icon: BookOpen, color: "bg-green-500" },
-    { title: "Total Reports", value: 8, icon: FileText, color: "bg-yellow-500" },
-    { title: "Pending Actions", value: 3, icon: AlertTriangle, color: "bg-red-500" },
+    { title: "Exam Schedules", value: 5, icon: Calendar, color: "bg-yellow-500" },
+    { title: "Attendance Rate", value: 95, icon: CheckSquare, color: "bg-green-500" },
   ]
 
   const handleSignOut = () => {

@@ -2,11 +2,27 @@
 
 import type React from "react"
 
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Home, Users, Clock, Calendar, Activity, FileText, Image, User, Settings, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import {
+  Home,
+  Users,
+  Clock,
+  Calendar,
+  Activity,
+  FileText,
+  Image,
+  User,
+  Settings,
+  ChevronDown,
+  ChevronRight,
+  PlusCircle,
+  List,
+  CheckSquare,
+} from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 
@@ -15,62 +31,103 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Sidebar({ className, isAdmin = false }: SidebarProps) {
-  const [isOpen, setIsOpen] = useState(true)
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({})
   const router = useRouter()
   const pathname = usePathname()
 
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }))
+  }
+
   const sidebarItems = [
     { icon: Home, label: "Dashboard", href: isAdmin ? "/admin-dashboard" : "/hod-dashboard" },
-    { icon: Users, label: "Attendance", href: `/${isAdmin ? "admin" : "hod"}/attendance` },
+    {
+      icon: Users,
+      label: "Attendance",
+      href: `/${isAdmin ? "admin" : "hod"}/attendance`,
+      subItems: isAdmin
+        ? [
+            { icon: PlusCircle, label: "Mark Attendance", href: "/admin/mark-attendance" },
+            { icon: List, label: "View Attendance", href: "/admin/view-attendance" },
+          ]
+        : [
+            { icon: CheckSquare, label: "Teacher Attendance", href: "/hod/teacher-attendance" },
+            { icon: List, label: "Student Attendance", href: "/hod/student-attendance" },
+          ],
+    },
     { icon: Clock, label: "Exam Timetable", href: `/${isAdmin ? "admin" : "hod"}/exam-timetable` },
     { icon: Calendar, label: "Regular Timetable", href: `/${isAdmin ? "admin" : "hod"}/regular-timetable` },
-    { icon: Activity, label: "Activities", href: `/${isAdmin ? "admin" : "hod"}/activities` },
-    { icon: FileText, label: "Content", href: `/${isAdmin ? "admin" : "hod"}/content` },
-    { icon: Image, label: "Media", href: `/${isAdmin ? "admin" : "hod"}/media` },
+    ...(isAdmin
+      ? [
+          { icon: Activity, label: "Activities", href: "/admin/activities" },
+          { icon: FileText, label: "Content", href: "/admin/content" },
+          { icon: Image, label: "Media", href: "/admin/media" },
+        ]
+      : []),
     { icon: User, label: "Profile", href: `/${isAdmin ? "admin" : "hod"}/profile` },
     { icon: Settings, label: "Settings", href: `/${isAdmin ? "admin" : "hod"}/settings` },
   ]
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-4 left-4 z-50 md:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <X size={20} /> : <Menu size={20} />}
-      </Button>
-      <div
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-gray-50 transition-transform duration-300 ease-in-out md:translate-x-0",
-          !isOpen && "-translate-x-full",
-          className,
-        )}
-      >
-        <div className="border-b p-4">
-          <h2 className="text-xl font-semibold">CMS Dashboard</h2>
-        </div>
-        <ScrollArea className="flex-1">
-          <div className="space-y-1 p-2">
-            {sidebarItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start gap-2 hover:bg-gray-100",
-                    pathname === item.href && "bg-gray-200 font-medium",
-                  )}
-                >
-                  <item.icon size={20} className="text-gray-500" />
-                  <span className="text-gray-700">{item.label}</span>
-                </Button>
-              </Link>
-            ))}
-          </div>
-        </ScrollArea>
+    <div className={cn("fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg", className)}>
+      <div className="flex h-16 items-center justify-center border-b">
+        <h2 className="text-2xl font-semibold text-gray-800">CMS Dashboard</h2>
       </div>
-    </>
+      <ScrollArea className="h-[calc(100vh-4rem)]">
+        <div className="p-4 space-y-2">
+          {sidebarItems.map((item) => (
+            <div key={item.label}>
+              {item.subItems ? (
+                <Collapsible open={openSections[item.label]} onOpenChange={() => toggleSection(item.label)}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between text-left font-normal">
+                      <span className="flex items-center">
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.label}
+                      </span>
+                      {openSections[item.label] ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pl-6 mt-2 space-y-2">
+                    {item.subItems.map((subItem) => (
+                      <Link key={subItem.href} href={subItem.href}>
+                        <Button
+                          variant="ghost"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            pathname === subItem.href && "bg-gray-100 font-medium",
+                          )}
+                        >
+                          <subItem.icon className="mr-2 h-4 w-4" />
+                          {subItem.label}
+                        </Button>
+                      </Link>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
+                <Link href={item.href}>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      pathname === item.href && "bg-gray-100 font-medium",
+                    )}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                  </Button>
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   )
 }
 
