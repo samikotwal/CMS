@@ -15,6 +15,7 @@ import {
   Calendar,
   FileText,
   Activity,
+  UserCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -220,6 +221,45 @@ export function AdminDashboard() {
                 </CardContent>
               </Card>
             </motion.div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold flex items-center">
+                  <UserCheck className="mr-2 h-5 w-5" />
+                  Attendance Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button className="w-full" onClick={() => router.push("/admin/mark-attendance")}>
+                    Mark Attendance
+                  </Button>
+                  <Button className="w-full" onClick={() => router.push("/admin/view-attendance")}>
+                    View Attendance
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold flex items-center">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Content Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <Button className="w-full" onClick={() => router.push("/admin/content")}>
+                    Manage Content
+                  </Button>
+                  <Button className="w-full" onClick={() => router.push("/admin/media")}>
+                    Manage Media
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>

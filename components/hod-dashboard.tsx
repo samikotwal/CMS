@@ -6,16 +6,15 @@ import { useRouter } from "next/navigation"
 import {
   Users,
   BookOpen,
-  FileText,
   AlertTriangle,
   Bell,
   Search,
   LogOut,
   BarChart2,
   Calendar,
-  Upload,
   Edit,
   CheckSquare,
+  UserCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -165,46 +164,18 @@ export function HODDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg font-semibold flex items-center">
-                  <FileText className="mr-2 h-5 w-5" />
-                  Content Management
+                  <UserCheck className="mr-2 h-5 w-5" />
+                  Attendance Management
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Button className="w-full mb-2" onClick={() => router.push("/hod/manage-content")}>
-                  Manage Content
+                <Button className="w-full mb-2" onClick={() => router.push("/hod/teacher-attendance")}>
+                  Teacher Attendance
                 </Button>
-                <Button className="w-full" onClick={() => router.push("/hod/approve-content")}>
-                  Approve Content
-                </Button>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <Upload className="mr-2 h-5 w-5" />
-                  Media Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button className="w-full mb-2" onClick={() => router.push("/hod/upload-media")}>
-                  Upload Media
-                </Button>
-                <Button className="w-full" onClick={() => router.push("/hod/manage-media")}>
-                  Manage Media
+                <Button className="w-full" onClick={() => router.push("/hod/student-attendance")} variant="default">
+                  Student Attendance
                 </Button>
               </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <AlertTriangle className="mr-2 h-5 w-5" />
-                  Recent Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent>{/* Add a list of recent reports here */}</CardContent>
             </Card>
             <Card>
               <CardHeader>
@@ -221,8 +192,54 @@ export function HODDashboard() {
                   Add New Course
                 </Button>
                 <Button className="w-full" onClick={() => router.push("/hod/generate-report")}>
-                  Generate Department Report
+                  Generate Report
                 </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold flex items-center">
+                  <AlertTriangle className="mr-2 h-5 w-5" />
+                  Recent Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Add a list of recent reports here */}
+                <p className="text-gray-500 italic">No recent reports</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold flex items-center">
+                  <UserCheck className="mr-2 h-5 w-5" />
+                  Today's Attendance Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Total Students:</span>
+                    <span className="font-medium">120</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Present:</span>
+                    <span className="font-medium text-green-600">112</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Absent:</span>
+                    <span className="font-medium text-red-600">8</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Attendance Rate:</span>
+                    <span className="font-medium">93.3%</span>
+                  </div>
+                  <Button className="w-full mt-4" onClick={() => router.push("/hod/student-attendance")}>
+                    View Detailed Attendance
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -9,7 +9,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   Home,
-  Users,
   Clock,
   Calendar,
   Activity,
@@ -22,6 +21,7 @@ import {
   PlusCircle,
   List,
   CheckSquare,
+  UserCheck,
 } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
@@ -31,7 +31,9 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Sidebar({ className, isAdmin = false }: SidebarProps) {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({})
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    Attendance: true, // Open by default
+  })
   const router = useRouter()
   const pathname = usePathname()
 
@@ -42,7 +44,7 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
   const sidebarItems = [
     { icon: Home, label: "Dashboard", href: isAdmin ? "/admin-dashboard" : "/hod-dashboard" },
     {
-      icon: Users,
+      icon: UserCheck,
       label: "Attendance",
       href: `/${isAdmin ? "admin" : "hod"}/attendance`,
       subItems: isAdmin
@@ -52,7 +54,7 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
           ]
         : [
             { icon: CheckSquare, label: "Teacher Attendance", href: "/hod/teacher-attendance" },
-            { icon: List, label: "Student Attendance", href: "/hod/student-attendance" },
+            { icon: UserCheck, label: "Student Attendance", href: "/hod/student-attendance" },
           ],
     },
     { icon: Clock, label: "Exam Timetable", href: `/${isAdmin ? "admin" : "hod"}/exam-timetable` },
