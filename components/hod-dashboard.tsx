@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import {
   Users,
   BookOpen,
-  AlertTriangle,
   Bell,
   Search,
   LogOut,
@@ -15,6 +14,7 @@ import {
   Edit,
   CheckSquare,
   UserCheck,
+  MessageSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,6 +22,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sidebar } from "@/components/sidebar"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 const data = [
   { name: "Math", attendance: 95 },
@@ -29,6 +31,45 @@ const data = [
   { name: "English", attendance: 92 },
   { name: "History", attendance: 85 },
   { name: "Geography", attendance: 90 },
+]
+
+// Mock data for anonymous reports
+const anonymousReports = [
+  {
+    id: 1,
+    subject: "Classroom Concern",
+    status: "New",
+    date: "2025-03-10",
+    preview: "I have a concern about the classroom environment...",
+  },
+  {
+    id: 2,
+    subject: "Course Material Feedback",
+    status: "In Progress",
+    date: "2025-03-09",
+    preview: "I would like to provide feedback on the course materials...",
+  },
+  {
+    id: 3,
+    subject: "Exam Schedule Request",
+    status: "New",
+    date: "2025-03-08",
+    preview: "I have a request regarding the upcoming exam schedule...",
+  },
+  {
+    id: 4,
+    subject: "Student Welfare Suggestion",
+    status: "Resolved",
+    date: "2025-03-07",
+    preview: "I have a suggestion to improve student welfare...",
+  },
+  {
+    id: 5,
+    subject: "Academic Support Needed",
+    status: "New",
+    date: "2025-03-06",
+    preview: "I am struggling with a particular subject and need support...",
+  },
 ]
 
 const AnimatedValue = ({ value }) => {
@@ -115,6 +156,7 @@ export function HODDashboard() {
                   <CardContent>
                     <div className="text-2xl font-bold">
                       <AnimatedValue value={stat.value} />
+                      {stat.title === "Attendance Rate" && "%"}
                     </div>
                   </CardContent>
                 </Card>
@@ -122,27 +164,67 @@ export function HODDashboard() {
             ))}
           </div>
 
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                <BarChart2 className="mr-2 h-5 w-5" />
-                Subject-wise Attendance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="attendance" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold flex items-center">
+                  <BarChart2 className="mr-2 h-5 w-5" />
+                  Subject-wise Attendance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={data}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="attendance" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-semibold flex items-center">
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  Anonymous Student Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[400px] pr-4">
+                  {anonymousReports.map((report) => (
+                    <div key={report.id} className="mb-4 p-4 bg-white rounded-lg shadow">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold">{report.subject}</h3>
+                        <Badge
+                          variant={
+                            report.status === "New"
+                              ? "destructive"
+                              : report.status === "In Progress"
+                                ? "default"
+                                : "secondary"
+                          }
+                        >
+                          {report.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{report.preview}</p>
+                      <div className="flex justify-between items-center text-xs text-gray-500">
+                        <span>{report.date}</span>
+                        <Button variant="outline" size="sm">
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <Card>
@@ -194,52 +276,6 @@ export function HODDashboard() {
                 <Button className="w-full" onClick={() => router.push("/hod/generate-report")}>
                   Generate Report
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <AlertTriangle className="mr-2 h-5 w-5" />
-                  Recent Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {/* Add a list of recent reports here */}
-                <p className="text-gray-500 italic">No recent reports</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <UserCheck className="mr-2 h-5 w-5" />
-                  Today's Attendance Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Total Students:</span>
-                    <span className="font-medium">120</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Present:</span>
-                    <span className="font-medium text-green-600">112</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Absent:</span>
-                    <span className="font-medium text-red-600">8</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Attendance Rate:</span>
-                    <span className="font-medium">93.3%</span>
-                  </div>
-                  <Button className="w-full mt-4" onClick={() => router.push("/hod/student-attendance")}>
-                    View Detailed Attendance
-                  </Button>
-                </div>
               </CardContent>
             </Card>
           </div>

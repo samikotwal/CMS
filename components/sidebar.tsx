@@ -22,6 +22,7 @@ import {
   List,
   CheckSquare,
   UserCheck,
+  MessageSquare,
 } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
@@ -65,7 +66,7 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
           { icon: FileText, label: "Content", href: "/admin/content" },
           { icon: Image, label: "Media", href: "/admin/media" },
         ]
-      : []),
+      : [{ icon: MessageSquare, label: "Anonymous Reports", href: "/hod/anonymous-reports" }]),
     { icon: User, label: "Profile", href: `/${isAdmin ? "admin" : "hod"}/profile` },
     { icon: Settings, label: "Settings", href: `/${isAdmin ? "admin" : "hod"}/settings` },
   ]
