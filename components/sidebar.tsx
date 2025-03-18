@@ -38,43 +38,106 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
 
+  // Determine if this is HOD dashboard based on pathname
+  const isHOD = pathname?.includes("/hod") || false
+  const isStudent = !isAdmin && !isHOD
+
+  // Determine color scheme based on user type - using lighter colors
+  const colorScheme = isAdmin
+    ? {
+        bg: "bg-blue-50",
+        hover: "hover:bg-blue-100",
+        active: "bg-blue-200",
+        text: "text-blue-800",
+        border: "border-blue-200",
+        itemBg: "bg-blue-100",
+        itemHover: "hover:bg-blue-200",
+        itemActive: "bg-blue-300",
+        icon: "text-blue-600",
+      }
+    : isHOD
+      ? {
+          bg: "bg-purple-50",
+          hover: "hover:bg-purple-100",
+          active: "bg-purple-200",
+          text: "text-purple-800",
+          border: "border-purple-200",
+          itemBg: "bg-purple-100",
+          itemHover: "hover:bg-purple-200",
+          itemActive: "bg-purple-300",
+          icon: "text-purple-600",
+        }
+      : {
+          bg: "bg-emerald-50",
+          hover: "hover:bg-emerald-100",
+          active: "bg-emerald-200",
+          text: "text-emerald-800",
+          border: "border-emerald-200",
+          itemBg: "bg-emerald-100",
+          itemHover: "hover:bg-emerald-200",
+          itemActive: "bg-emerald-300",
+          icon: "text-emerald-600",
+        }
+
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }))
   }
 
   const sidebarItems = [
-    { icon: Home, label: "Dashboard", href: isAdmin ? "/admin-dashboard" : "/hod-dashboard" },
+    {
+      icon: Home,
+      label: "Dashboard",
+      href: isAdmin ? "/admin-dashboard" : isHOD ? "/hod-dashboard" : "/student-dashboard",
+    },
     {
       icon: UserCheck,
       label: "Attendance",
-      href: `/${isAdmin ? "admin" : "hod"}/attendance`,
+      href: `/${isAdmin ? "admin" : isHOD ? "hod" : "student"}/attendance`,
       subItems: isAdmin
         ? [
             { icon: PlusCircle, label: "Mark Attendance", href: "/admin/mark-attendance" },
             { icon: List, label: "View Attendance", href: "/admin/view-attendance" },
           ]
-        : [
-            { icon: CheckSquare, label: "Teacher Attendance", href: "/hod/teacher-attendance" },
-            { icon: UserCheck, label: "Student Attendance", href: "/hod/student-attendance" },
-          ],
+        : isHOD
+          ? [
+              { icon: CheckSquare, label: "Teacher Attendance", href: "/hod/teacher-attendance" },
+              { icon: UserCheck, label: "Student Attendance", href: "/hod/student-attendance" },
+            ]
+          : [
+              { icon: CheckSquare, label: "Mark Attendance", href: "/student-dashboard/attendance" },
+              { icon: List, label: "View History", href: "/student-dashboard/attendance-history" },
+            ],
     },
-    { icon: Clock, label: "Exam Timetable", href: `/${isAdmin ? "admin" : "hod"}/exam-timetable` },
-    { icon: Calendar, label: "Regular Timetable", href: `/${isAdmin ? "admin" : "hod"}/regular-timetable` },
+    { icon: Clock, label: "Exam Timetable", href: `/${isAdmin ? "admin" : isHOD ? "hod" : "student"}/exam-timetable` },
+    {
+      icon: Calendar,
+      label: "Regular Timetable",
+      href: `/${isAdmin ? "admin" : isHOD ? "hod" : "student"}/regular-timetable`,
+    },
     ...(isAdmin
       ? [
           { icon: Activity, label: "Activities", href: "/admin/activities" },
           { icon: FileText, label: "Content", href: "/admin/content" },
           { icon: Image, label: "Media", href: "/admin/media" },
         ]
-      : [{ icon: MessageSquare, label: "Anonymous Reports", href: "/hod/anonymous-reports" }]),
-    { icon: User, label: "Profile", href: `/${isAdmin ? "admin" : "hod"}/profile` },
-    { icon: Settings, label: "Settings", href: `/${isAdmin ? "admin" : "hod"}/settings` },
+      : isHOD
+        ? [{ icon: MessageSquare, label: "Anonymous Reports", href: "/hod/anonymous-reports" }]
+        : [{ icon: Activity, label: "Activities", href: "/student-dashboard/activities" }]),
+    { icon: User, label: "Profile", href: `/${isAdmin ? "admin" : isHOD ? "hod" : "student"}/profile` },
+    { icon: Settings, label: "Settings", href: `/${isAdmin ? "admin" : isHOD ? "hod" : "student"}/settings` },
   ]
 
   return (
-    <div className={cn("fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg", className)}>
-      <div className="flex h-16 items-center justify-center border-b">
-        <h2 className="text-2xl font-semibold text-gray-800">CMS Dashboard</h2>
+    <div
+      className={cn(
+        `fixed inset-y-0 left-0 z-40 w-64 ${colorScheme.bg} shadow-lg border-r ${colorScheme.border}`,
+        className,
+      )}
+    >
+      <div className={`flex h-16 items-center justify-center border-b ${colorScheme.border}`}>
+        <h2 className={`text-2xl font-semibold ${colorScheme.text}`}>
+          {isAdmin ? "Admin" : isHOD ? "HOD" : "Student"} Dashboard
+        </h2>
       </div>
       <ScrollArea className="h-[calc(100vh-4rem)]">
         <div className="p-4 space-y-2">
@@ -83,9 +146,12 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
               {item.subItems ? (
                 <Collapsible open={openSections[item.label]} onOpenChange={() => toggleSection(item.label)}>
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-between text-left font-normal">
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-between text-left font-normal ${colorScheme.text} ${colorScheme.hover} ${openSections[item.label] ? colorScheme.active : ""}`}
+                    >
                       <span className="flex items-center">
-                        <item.icon className="mr-2 h-4 w-4" />
+                        <item.icon className={`mr-2 h-4 w-4 ${colorScheme.icon}`} />
                         {item.label}
                       </span>
                       {openSections[item.label] ? (
@@ -101,11 +167,13 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
                         <Button
                           variant="ghost"
                           className={cn(
-                            "w-full justify-start text-left font-normal",
-                            pathname === subItem.href && "bg-gray-100 font-medium",
+                            `w-full justify-start text-left font-normal ${colorScheme.text} ${colorScheme.itemHover}`,
+                            pathname === subItem.href
+                              ? `${colorScheme.itemActive} font-medium`
+                              : `${colorScheme.itemBg}`,
                           )}
                         >
-                          <subItem.icon className="mr-2 h-4 w-4" />
+                          <subItem.icon className={`mr-2 h-4 w-4 ${colorScheme.icon}`} />
                           {subItem.label}
                         </Button>
                       </Link>
@@ -117,11 +185,11 @@ export function Sidebar({ className, isAdmin = false }: SidebarProps) {
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
-                      pathname === item.href && "bg-gray-100 font-medium",
+                      `w-full justify-start text-left font-normal ${colorScheme.text} ${colorScheme.hover}`,
+                      pathname === item.href ? `${colorScheme.active} font-medium` : "",
                     )}
                   >
-                    <item.icon className="mr-2 h-4 w-4" />
+                    <item.icon className={`mr-2 h-4 w-4 ${colorScheme.icon}`} />
                     {item.label}
                   </Button>
                 </Link>

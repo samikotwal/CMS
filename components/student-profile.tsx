@@ -1,207 +1,345 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { User, Camera, Save } from "lucide-react"
+import { useState, useEffect } from "react"
+import { motion, useAnimation } from "framer-motion"
+import { useRouter } from "next/navigation"
+import { Book, Clock, Calendar, Activity, Bell, Search, LogOut, TrendingUp, BarChart2, PieChart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Sidebar } from "@/components/sidebar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-const FormField = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="mb-4">
-    <Label className="text-sm font-medium text-gray-700">{label}</Label>
-    <div className="mt-1">{children}</div>
-  </div>
-)
+const performanceData = [
+  { month: "Jan", score: 85 },
+  { month: "Feb", score: 78 },
+  { month: "Mar", score: 92 },
+  { month: "Apr", score: 88 },
+  { month: "May", score: 95 },
+  { month: "Jun", score: 90 },
+]
 
-const FileUpload = ({ label, id }: { label: string; id: string }) => (
-  <FormField label={label}>
-    <Input
-      id={id}
-      type="file"
-      className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-    />
-  </FormField>
-)
+const courseDistribution = [
+  { name: "Mathematics", value: 30 },
+  { name: "Science", value: 25 },
+  { name: "Literature", value: 20 },
+  { name: "History", value: 15 },
+  { name: "Art", value: 10 },
+]
 
-export function StudentProfile() {
-  const [profileImage, setProfileImage] = useState<string | null>(null)
+const assignmentCompletion = [
+  { assignment: "Assignment 1", completed: 95 },
+  { assignment: "Assignment 2", completed: 88 },
+  { assignment: "Assignment 3", completed: 92 },
+  { assignment: "Assignment 4", completed: 78 },
+  { assignment: "Assignment 5", completed: 85 },
+]
+
+const COLORS = ["#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"]
+
+const AnimatedValue = ({ value }) => {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const animationDuration = 2000
+    const frameDuration = 1000 / 60
+    const totalFrames = Math.round(animationDuration / frameDuration)
+    let frame = 0
+
+    const timer = setInterval(() => {
+      frame++
+      const progress = frame / totalFrames
+      setCount(Math.floor(value * progress))
+
+      if (frame === totalFrames) {
+        clearInterval(timer)
+      }
+    }, frameDuration)
+
+    return () => clearInterval(timer)
+  }, [value])
+
+  return <span>{count}</span>
+}
+
+const AnimatedBar = motion(motion.rect)
+const AnimatedLine = motion(motion.path)
+const AnimatedCircle = motion(motion.circle)
+
+export function StudentDashboard() {
+  const router = useRouter()
+  const controls = useAnimation()
+
+  const stats = [
+    { title: "Courses Enrolled", value: 6, icon: Book, color: "bg-emerald-600" },
+    { title: "Upcoming Exams", value: 3, icon: Clock, color: "bg-emerald-500" },
+    { title: "Attendance Rate", value: 95, icon: Calendar, color: "bg-emerald-400" },
+    { title: "Extracurricular Activities", value: 4, icon: Activity, color: "bg-emerald-300" },
+  ]
+
+  const handleSignOut = () => {
+    router.push("/")
+  }
+
+  useEffect(() => {
+    controls.start({ opacity: 1, scale: 1 })
+  }, [controls])
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden"
-      >
-        <div className="bg-indigo-600 p-6 sm:p-10 flex justify-between items-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">Student Profile</h1>
-          <Button variant="secondary">
-            <Save className="mr-2 h-4 w-4" /> Save Changes
-          </Button>
-        </div>
-
-        <div className="p-6 sm:p-10">
-          <div className="flex flex-col sm:flex-row items-center mb-8">
-            <div className="relative mb-4 sm:mb-0 sm:mr-8">
-              <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                {profileImage ? (
-                  <img src={profileImage || "/placeholder.svg"} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-16 h-16 text-gray-400" />
-                )}
+    <div className="min-h-screen bg-green-50 flex">
+      <Sidebar />
+      <div className="flex-1 ml-64">
+        <header className="bg-emerald-700 text-white shadow-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">Student Dashboard</h1>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-200" size={20} />
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="pl-10 pr-4 bg-emerald-600 border-emerald-500 placeholder-emerald-300 text-white focus:bg-emerald-800 focus:border-emerald-400 focus:ring-emerald-400"
+                />
               </div>
-              <label
-                htmlFor="profile-image"
-                className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full cursor-pointer"
+              <Button variant="ghost" size="icon" className="text-emerald-100 hover:text-white hover:bg-emerald-600">
+                <Bell />
+              </Button>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback className="bg-emerald-500 text-white">ST</AvatarFallback>
+              </Avatar>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSignOut}
+                className="text-emerald-100 hover:text-white hover:bg-emerald-600"
               >
-                <Camera className="h-5 w-5" />
-              </label>
-              <input
-                id="profile-image"
-                type="file"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onloadend = () => {
-                      setProfileImage(reader.result as string)
-                    }
-                    reader.readAsDataURL(file)
-                  }
-                }}
-                accept="image/*"
-              />
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-800">John Doe</h2>
-              <p className="text-gray-600">Student ID: STU2025001</p>
+                <LogOut />
+              </Button>
             </div>
           </div>
+        </header>
 
-          <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="basic">Basic Info</TabsTrigger>
-              <TabsTrigger value="personal">Personal</TabsTrigger>
-              <TabsTrigger value="address">Address</TabsTrigger>
-              <TabsTrigger value="education">Education</TabsTrigger>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="border-emerald-200 shadow-md hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-white to-green-50">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-emerald-800">{stat.title}</CardTitle>
+                    <div className={`${stat.color} p-2 rounded-full shadow-sm`}>
+                      <stat.icon className="h-4 w-4 text-white" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-emerald-900">
+                      <AnimatedValue value={stat.value} />
+                      {stat.title === "Attendance Rate" && "%"}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <Card className="border-emerald-200 shadow-md bg-white">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                <CardTitle className="flex items-center text-emerald-800">
+                  <TrendingUp className="mr-2 h-5 w-5 text-emerald-600" />
+                  Performance Over Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[300px]">
+                  <svg width="100%" height="100%" viewBox="0 0 500 300">
+                    {performanceData.map((entry, index) => (
+                      <AnimatedLine
+                        key={`line-${index}`}
+                        x1={index * 100}
+                        y1={300 - entry.score * 3}
+                        x2={(index + 1) * 100}
+                        y2={
+                          index < performanceData.length - 1
+                            ? 300 - performanceData[index + 1].score * 3
+                            : 300 - entry.score * 3
+                        }
+                        stroke="#059669"
+                        strokeWidth="2"
+                        fill="none"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, delay: index * 0.1 }}
+                      />
+                    ))}
+                    {performanceData.map((entry, index) => (
+                      <AnimatedCircle
+                        key={`point-${index}`}
+                        cx={index * 100}
+                        cy={300 - entry.score * 3}
+                        r="4"
+                        fill="#059669"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.5, delay: 1 + index * 0.1 }}
+                      />
+                    ))}
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-emerald-200 shadow-md bg-white">
+              <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                <CardTitle className="flex items-center text-emerald-800">
+                  <PieChart className="mr-2 h-5 w-5 text-emerald-600" />
+                  Course Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="h-[300px]">
+                  <svg width="100%" height="100%" viewBox="0 0 400 400">
+                    <g transform="translate(200, 200)">
+                      {courseDistribution.map((entry, index) => {
+                        const startAngle =
+                          index > 0
+                            ? (courseDistribution.slice(0, index).reduce((sum, item) => sum + item.value, 0) / 100) *
+                              360
+                            : 0
+                        const endAngle =
+                          (courseDistribution.slice(0, index + 1).reduce((sum, item) => sum + item.value, 0) / 100) *
+                          360
+                        const x1 = Math.cos((startAngle * Math.PI) / 180) * 180
+                        const y1 = Math.sin((startAngle * Math.PI) / 180) * 180
+                        const x2 = Math.cos((endAngle * Math.PI) / 180) * 180
+                        const y2 = Math.sin((endAngle * Math.PI) / 180) * 180
+                        const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1"
+
+                        return (
+                          <AnimatedLine
+                            key={entry.name}
+                            d={`M 0 0 L ${x1} ${y1} A 180 180 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
+                            fill={COLORS[index % COLORS.length]}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                          />
+                        )
+                      })}
+                    </g>
+                  </svg>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  {courseDistribution.map((course, index) => (
+                    <div key={course.name} className="flex items-center">
+                      <div
+                        className="w-3 h-3 rounded-full mr-2"
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      ></div>
+                      <span className="text-sm text-emerald-800">{course.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="border-emerald-200 shadow-md bg-white">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+              <CardTitle className="flex items-center text-emerald-800">
+                <BarChart2 className="mr-2 h-5 w-5 text-emerald-600" />
+                Assignment Completion Rates
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="h-[300px]">
+                <svg width="100%" height="100%" viewBox="0 0 500 300">
+                  {assignmentCompletion.map((entry, index) => (
+                    <AnimatedBar
+                      key={entry.assignment}
+                      x={index * 100 + 10}
+                      y={300 - entry.completed * 3}
+                      width="80"
+                      height={entry.completed * 3}
+                      fill="#059669"
+                      initial={{ scaleY: 0 }}
+                      animate={{ scaleY: 1 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    />
+                  ))}
+                </svg>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Tabs defaultValue="overview" className="mt-6">
+            <TabsList className="bg-emerald-600 text-white">
+              <TabsTrigger
+                value="overview"
+                className="data-[state=active]:bg-white data-[state=active]:text-emerald-900 data-[state=active]:shadow-sm"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger
+                value="attendance"
+                className="data-[state=active]:bg-white data-[state=active]:text-emerald-900 data-[state=active]:shadow-sm"
+              >
+                Attendance
+              </TabsTrigger>
+              <TabsTrigger
+                value="timetables"
+                className="data-[state=active]:bg-white data-[state=active]:text-emerald-900 data-[state=active]:shadow-sm"
+              >
+                Timetables
+              </TabsTrigger>
+              <TabsTrigger
+                value="activities"
+                className="data-[state=active]:bg-white data-[state=active]:text-emerald-900 data-[state=active]:shadow-sm"
+              >
+                Activities
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="basic" className="mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <FormField label="Name">
-                  <Input placeholder="Enter your name" />
-                </FormField>
-                <FormField label="Mobile Number">
-                  <Input type="tel" placeholder="Enter your mobile number" />
-                </FormField>
-                <FormField label="Email">
-                  <Input type="email" placeholder="Enter your email" />
-                </FormField>
-                <FormField label="Roll No">
-                  <Input placeholder="Enter your roll number" />
-                </FormField>
-                <FormField label="Date of Joining">
-                  <Input type="date" />
-                </FormField>
-              </div>
-              <FormField label="About">
-                <Textarea placeholder="Write something about yourself" className="h-32" />
-              </FormField>
+            <TabsContent value="overview"></TabsContent>
+            <TabsContent value="attendance">
+              <Card className="border-emerald-200 shadow-md">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                  <CardTitle className="text-emerald-800">Attendance Summary</CardTitle>
+                </CardHeader>
+                <CardContent>{/* Add attendance content here */}</CardContent>
+              </Card>
             </TabsContent>
-            <TabsContent value="personal" className="mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <FormField label="Date of Birth">
-                  <Input type="date" />
-                </FormField>
-                <FormField label="Gender">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormField>
-                <FormField label="Nationality">
-                  <Input placeholder="Enter your nationality" />
-                </FormField>
-                <FormField label="Blood Group">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select blood group" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A+">A+</SelectItem>
-                      <SelectItem value="A-">A-</SelectItem>
-                      <SelectItem value="B+">B+</SelectItem>
-                      <SelectItem value="B-">B-</SelectItem>
-                      <SelectItem value="AB+">AB+</SelectItem>
-                      <SelectItem value="AB-">AB-</SelectItem>
-                      <SelectItem value="O+">O+</SelectItem>
-                      <SelectItem value="O-">O-</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormField>
-                <FormField label="Aadhar Number">
-                  <Input placeholder="Enter your Aadhar number" />
-                </FormField>
-                <FormField label="PAN Number">
-                  <Input placeholder="Enter your PAN number" />
-                </FormField>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
-                <FileUpload label="Aadhar Card Image" id="aadhar-card" />
-                <FileUpload label="PAN Card Image" id="pan-card" />
-                <FileUpload label="Digital Signature" id="digital-signature" />
+            <TabsContent value="timetables">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="border-emerald-200 shadow-md">
+                  <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                    <CardTitle className="text-emerald-800">Exam Timetable</CardTitle>
+                  </CardHeader>
+                  <CardContent>{/* Add exam timetable content here */}</CardContent>
+                </Card>
+                <Card className="border-emerald-200 shadow-md">
+                  <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                    <CardTitle className="text-emerald-800">Regular Timetable</CardTitle>
+                  </CardHeader>
+                  <CardContent>{/* Add regular timetable content here */}</CardContent>
+                </Card>
               </div>
             </TabsContent>
-            <TabsContent value="address" className="mt-6">
-              <div className="grid grid-cols-1 gap-6">
-                <FormField label="Permanent Address">
-                  <Textarea placeholder="Enter your permanent address" className="h-24" />
-                </FormField>
-                <FormField label="Permanent Address PIN Code">
-                  <Input placeholder="Enter PIN code" />
-                </FormField>
-                <FormField label="Correspondence Address">
-                  <Textarea placeholder="Enter your correspondence address" className="h-24" />
-                </FormField>
-                <FormField label="Correspondence Address PIN Code">
-                  <Input placeholder="Enter PIN code" />
-                </FormField>
-              </div>
-            </TabsContent>
-            <TabsContent value="education" className="mt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <FormField label="College/University Name">
-                  <Input placeholder="Enter your college/university name" />
-                </FormField>
-                <FormField label="Marks in College (%)">
-                  <Input type="number" placeholder="Enter your college marks in percentage" min="0" max="100" />
-                </FormField>
-                <FormField label="School Name">
-                  <Input placeholder="Enter your school name" />
-                </FormField>
-                <FormField label="Marks in 10th">
-                  <Input type="number" placeholder="Enter your 10th marks in percentage" min="0" max="100" />
-                </FormField>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-                <FileUpload label="College Result" id="college-result" />
-                <FileUpload label="10th Marks Card" id="tenth-marks-card" />
-              </div>
+            <TabsContent value="activities">
+              <Card className="border-emerald-200 shadow-md">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-white border-b border-emerald-100">
+                  <CardTitle className="text-emerald-800">Recent Activities</CardTitle>
+                </CardHeader>
+                <CardContent>{/* Add activities content here */}</CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
-        </div>
-      </motion.div>
+        </main>
+      </div>
     </div>
   )
 }

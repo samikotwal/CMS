@@ -64,9 +64,9 @@ export function AdminDashboard() {
 
   const stats = [
     { title: "Total Students", value: 1234, icon: Users, color: "bg-blue-500" },
-    { title: "Total Courses", value: 56, icon: BookOpen, color: "bg-green-500" },
-    { title: "Total Branches", value: 8, icon: Building, color: "bg-yellow-500" },
-    { title: "Total Faculty", value: 120, icon: GraduationCap, color: "bg-purple-500" },
+    { title: "Total Courses", value: 56, icon: BookOpen, color: "bg-blue-400" },
+    { title: "Total Branches", value: 8, icon: Building, color: "bg-blue-300" },
+    { title: "Total Faculty", value: 120, icon: GraduationCap, color: "bg-blue-200" },
   ]
 
   const handleSignOut = () => {
@@ -74,25 +74,34 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-slate-50 flex">
       <Sidebar isAdmin />
       <div className="flex-1 ml-64">
-        <header className="bg-white shadow-sm">
+        <header className="bg-blue-100 shadow-sm border-b border-blue-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-2xl font-semibold text-blue-800">Admin Dashboard</h1>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                <Input type="text" placeholder="Search..." className="pl-10 pr-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400" size={20} />
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  className="pl-10 pr-4 bg-white border-blue-200 placeholder-blue-300 text-blue-800 focus:border-blue-400 focus:ring-blue-400"
+                />
               </div>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-blue-600 hover:text-blue-800 hover:bg-blue-100">
                 <Bell />
               </Button>
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarFallback className="bg-blue-500 text-white">AD</AvatarFallback>
               </Avatar>
-              <Button variant="ghost" size="icon" onClick={handleSignOut}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSignOut}
+                className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+              >
                 <LogOut />
               </Button>
             </div>
@@ -108,15 +117,15 @@ export function AdminDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card>
+                <Card className="border-blue-200 shadow-md hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-white to-blue-50">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                    <div className={`${stat.color} p-2 rounded-full`}>
+                    <CardTitle className="text-sm font-medium text-blue-800">{stat.title}</CardTitle>
+                    <div className={`${stat.color} p-2 rounded-full shadow-sm`}>
                       <stat.icon className="h-4 w-4 text-white" />
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">
+                    <div className="text-2xl font-bold text-blue-900">
                       <AnimatedValue value={stat.value} />
                     </div>
                   </CardContent>
@@ -125,23 +134,23 @@ export function AdminDashboard() {
             ))}
           </div>
 
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                <TrendingUp className="mr-2 h-5 w-5" />
+          <Card className="mb-8 border-blue-200 shadow-md bg-white">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-white border-b border-blue-100">
+              <CardTitle className="text-xl font-semibold flex items-center text-blue-800">
+                <TrendingUp className="mr-2 h-5 w-5 text-blue-600" />
                 Student and Course Trends
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="students" stroke="#8884d8" strokeWidth={2} />
-                    <Line type="monotone" dataKey="courses" stroke="#82ca9d" strokeWidth={2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" />
+                    <YAxis stroke="#64748b" />
+                    <Tooltip contentStyle={{ backgroundColor: "#fff", borderColor: "#e2e8f0" }} />
+                    <Line type="monotone" dataKey="students" stroke="#3b82f6" strokeWidth={2} />
+                    <Line type="monotone" dataKey="courses" stroke="#93c5fd" strokeWidth={2} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -150,15 +159,18 @@ export function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center">
-                    <Calendar className="mr-2 h-5 w-5" />
+              <Card className="hover:shadow-lg transition-shadow duration-300 border-blue-200 bg-gradient-to-br from-white to-blue-50">
+                <CardHeader className="border-b border-blue-100">
+                  <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                    <Calendar className="mr-2 h-5 w-5 text-blue-600" />
                     Exam Timetable
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full" onClick={() => router.push("/admin/exam-timetable")}>
+                <CardContent className="pt-4">
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/exam-timetable")}
+                  >
                     Manage Exam Timetable
                   </Button>
                 </CardContent>
@@ -169,15 +181,18 @@ export function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center">
-                    <Calendar className="mr-2 h-5 w-5" />
+              <Card className="hover:shadow-lg transition-shadow duration-300 border-blue-200 bg-gradient-to-br from-white to-blue-50">
+                <CardHeader className="border-b border-blue-100">
+                  <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                    <Calendar className="mr-2 h-5 w-5 text-blue-600" />
                     Regular Timetable
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full" onClick={() => router.push("/admin/regular-timetable")}>
+                <CardContent className="pt-4">
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/regular-timetable")}
+                  >
                     Manage Regular Timetable
                   </Button>
                 </CardContent>
@@ -188,15 +203,18 @@ export function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center">
-                    <Activity className="mr-2 h-5 w-5" />
+              <Card className="hover:shadow-lg transition-shadow duration-300 border-blue-200 bg-gradient-to-br from-white to-blue-50">
+                <CardHeader className="border-b border-blue-100">
+                  <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                    <Activity className="mr-2 h-5 w-5 text-blue-600" />
                     Activities
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full" onClick={() => router.push("/admin/activities")}>
+                <CardContent className="pt-4">
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/activities")}
+                  >
                     Manage Activities
                   </Button>
                 </CardContent>
@@ -207,15 +225,18 @@ export function AdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center">
-                    <FileText className="mr-2 h-5 w-5" />
+              <Card className="hover:shadow-lg transition-shadow duration-300 border-blue-200 bg-gradient-to-br from-white to-blue-50">
+                <CardHeader className="border-b border-blue-100">
+                  <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                    <FileText className="mr-2 h-5 w-5 text-blue-600" />
                     Content
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <Button className="w-full" onClick={() => router.push("/admin/content")}>
+                <CardContent className="pt-4">
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/content")}
+                  >
                     Manage Content
                   </Button>
                 </CardContent>
@@ -224,37 +245,49 @@ export function AdminDashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <UserCheck className="mr-2 h-5 w-5" />
+            <Card className="border-blue-200 shadow-md bg-gradient-to-br from-white to-blue-50">
+              <CardHeader className="border-b border-blue-100">
+                <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                  <UserCheck className="mr-2 h-5 w-5 text-blue-600" />
                   Attendance Management
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="space-y-3">
-                  <Button className="w-full" onClick={() => router.push("/admin/mark-attendance")}>
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/mark-attendance")}
+                  >
                     Mark Attendance
                   </Button>
-                  <Button className="w-full" onClick={() => router.push("/admin/view-attendance")}>
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/view-attendance")}
+                  >
                     View Attendance
                   </Button>
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <FileText className="mr-2 h-5 w-5" />
+            <Card className="border-blue-200 shadow-md bg-gradient-to-br from-white to-blue-50">
+              <CardHeader className="border-b border-blue-100">
+                <CardTitle className="text-lg font-semibold flex items-center text-blue-800">
+                  <FileText className="mr-2 h-5 w-5 text-blue-600" />
                   Content Management
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="space-y-3">
-                  <Button className="w-full" onClick={() => router.push("/admin/content")}>
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/content")}
+                  >
                     Manage Content
                   </Button>
-                  <Button className="w-full" onClick={() => router.push("/admin/media")}>
+                  <Button
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm"
+                    onClick={() => router.push("/admin/media")}
+                  >
                     Manage Media
                   </Button>
                 </div>
